@@ -1,14 +1,31 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import store, { ADD_INGREDIENT } from "./../../store";
 
 class Ingredients extends Component {
   constructor(props) {
     super(props);
+    const reduxState = store.getState();
     this.state = {
-      ingredients: [],
+      ingredients: reduxState.ingredients,
       input: ""
     };
+    console.log(this.state)
   }
+//make list show up without leaving the page
+  componentDidMount() {
+    //subscribe updates the page any time the data on redux state changes.
+    //subcribe takes a callback function as its argument that will fire when there's an update in Redux.
+    //every time it is fired, getState will get an updated version of the Redux state. 
+      store.subscribe(() => {
+        const reduxState = store.getState();
+        this.setState({
+          ingredients: reduxState.ingredients
+        });
+      });
+    }
+
+
   handleChange(val) {
     this.setState({
       input: val
@@ -16,6 +33,10 @@ class Ingredients extends Component {
   }
   addIngredient() {
     // Send data to Redux state
+    store.dispatch({
+      type: ADD_INGREDIENT,
+      payload: this.state.input
+    })
     this.setState({
       input: ""
     });

@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import store, { UPDATE_NAME, UPDATE_CATEGORY } from "./../../store";
 import "./Name.css";
 
 class Name extends Component {
   constructor(props) {
     super(props);
+    //store.getState gives access to the Redux state object.
+    //store the return value in a variable so it can be referenced easily. 
+    const reduxState = store.getState();
     this.state = {
-      name: '',
-      category: ''
+      name: reduxState.name,
+      category: reduxState.category
     };
+    console.log(this.state)
   }
   handleNameChange(nameVal) {
     this.setState({
@@ -23,6 +28,20 @@ class Name extends Component {
   }
   saveChanges() {
     // Send data to Redux state
+    // store is an object with a method on it called dispatch.
+    //dispatch sends actions to the reducer.
+    store.dispatch({
+      //the type of action objects should match the action types imported from above
+      type: UPDATE_NAME,
+      //payload pulls the values of the input boxes from state where they are being stored
+      payload: this.state.name
+    });
+
+    store.dispatch({
+      type: UPDATE_CATEGORY,
+      payload: this.state.category
+    });
+    
   }
   render() {
     return (
